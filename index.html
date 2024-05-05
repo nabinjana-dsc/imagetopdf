@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image to PDF Converter</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    #image-preview {
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 10px;
+        cursor: pointer;
+    }
+    .btn:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+<h1>Image <svg width="40" height="40" viewBox="0 0 1024 1024" class="icon"  version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M853.333333 960H170.666667V64h469.333333l213.333333 213.333333z" fill="#90CAF9" /><path d="M821.333333 298.666667H618.666667V96z" fill="#E1F5FE" /><path d="M448 490.666667l-149.333333 213.333333h298.666666z" fill="#1565C0" /><path d="M597.333333 563.2L490.666667 704h213.333333z" fill="#1976D2" /><path d="M672 522.666667m-32 0a32 32 0 1 0 64 0 32 32 0 1 0-64 0Z" fill="#1976D2" /></svg> to <svg height="40" width="40" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    viewBox="0 0 309.267 309.267" xml:space="preserve">
+<g>
+   <path style="fill:#E2574C;" d="M38.658,0h164.23l87.049,86.711v203.227c0,10.679-8.659,19.329-19.329,19.329H38.658
+       c-10.67,0-19.329-8.65-19.329-19.329V19.329C19.329,8.65,27.989,0,38.658,0z"/>
+   <path style="fill:#B53629;" d="M289.658,86.981h-67.372c-10.67,0-19.329-8.659-19.329-19.329V0.193L289.658,86.981z"/>
+   <path style="fill:#FFFFFF;" d="M217.434,146.544c3.238,0,4.823-2.822,4.823-5.557c0-2.832-1.653-5.567-4.823-5.567h-18.44
+       c-3.605,0-5.615,2.986-5.615,6.282v45.317c0,4.04,2.3,6.282,5.412,6.282c3.093,0,5.403-2.242,5.403-6.282v-12.438h11.153
+       c3.46,0,5.19-2.832,5.19-5.644c0-2.754-1.73-5.49-5.19-5.49h-11.153v-16.903C204.194,146.544,217.434,146.544,217.434,146.544z
+        M155.107,135.42h-13.492c-3.663,0-6.263,2.513-6.263,6.243v45.395c0,4.629,3.74,6.079,6.417,6.079h14.159
+       c16.758,0,27.824-11.027,27.824-28.047C183.743,147.095,173.325,135.42,155.107,135.42z M155.755,181.946h-8.225v-35.334h7.413
+       c11.221,0,16.101,7.529,16.101,17.918C171.044,174.253,166.25,181.946,155.755,181.946z M106.33,135.42H92.964
+       c-3.779,0-5.886,2.493-5.886,6.282v45.317c0,4.04,2.416,6.282,5.663,6.282s5.663-2.242,5.663-6.282v-13.231h8.379
+       c10.341,0,18.875-7.326,18.875-19.107C125.659,143.152,117.425,135.42,106.33,135.42z M106.108,163.158h-7.703v-17.097h7.703
+       c4.755,0,7.78,3.711,7.78,8.553C113.878,159.447,110.863,163.158,106.108,163.158z"/>
+</g>
+</svg>PDF Converter</h1>
+
+<div>
+    <input type="file" id="image-input" accept=".png, .jpg, .jpeg" style="display:none;">
+    <label for="image-input" class="btn">Upload Image</label>
+</div>
+<div id="image-preview"></div>
+<button id="convert-btn" class="btn" style="display:none;">Convert to PDF</button>
+<a id="download-link" class="btn" style="display:none;" download="converted_pdf.pdf">Download PDF</a>
+
+<!-- Include html2pdf.js from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+<script>
+    document.getElementById('image-input').addEventListener('change', function(event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var img = document.createElement("img");
+            img.src = e.target.result;
+            img.onload = function() {
+                document.getElementById('image-preview').appendChild(img);
+                document.getElementById('convert-btn').style.display = 'inline-block';
+            }
+        }
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('convert-btn').addEventListener('click', function() {
+        var img = document.querySelector('#image-preview img');
+        if (img) {
+            var element = document.getElementById('image-preview');
+            html2pdf(element, {
+                margin: 10,
+                filename: 'converted_pdf.pdf',
+                image: { type: 'jpeg', quality: 0.95 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).then(function() {
+                document.getElementById('download-link').style.display = 'inline-block';
+            });
+        } else {
+            alert('Please upload an image first.');
+        }
+    });
+</script>
+</body>
+</html>
